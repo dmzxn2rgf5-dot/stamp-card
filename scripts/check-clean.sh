@@ -47,7 +47,8 @@ if [ -f "$PRIVATE" ]; then
 else
   echo "- private names: skipped (no scripts/.private-patterns)"
 fi
-check "workers.dev addresses" '[a-z0-9-]+\.[a-z0-9-]+\.workers\.dev'
+# Allowed: the public Stamp Card demo, linked from the README.
+check "workers.dev addresses" '[a-z0-9-]+\.[a-z0-9-]+\.workers\.dev' '' '^stamp-card-demo\.getstampcard\.workers\.dev$'
 check "32-character hex strings (Cloudflare account IDs)" '(^|[^0-9a-f])[0-9a-f]{32}([^0-9a-f]|$)'
 # Allowed: the all-zero test ID, and the public Web3Forms key for the enquiry form (src/config.ts).
 check "UUIDs (D1 database IDs)" '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}' -i '^(0{8}-0{4}-0{4}-0{4}-0{12}|6b778227-8154-4f3e-a4db-b113abc77d11)$'

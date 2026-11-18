@@ -1,6 +1,6 @@
 {
   "name": "stamp-card",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Stamp Card – the loyalty card alternative. No app, no subscription, runs free on Cloudflare.",
   "license": "MIT",
   "private": true,
