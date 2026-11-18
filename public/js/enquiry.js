@@ -9,6 +9,8 @@
   f.addEventListener("submit", function (e) {
     e.preventDefault();
     err.classList.add("hidden");
+    var picked = f.querySelector("input[name=choice]:checked");
+    if (!picked) { fail("Please pick an option."); f.querySelector("input[name=choice]").focus(); return; }
     var email = f.email.value.trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { fail("Please enter a valid email address."); f.email.focus(); return; }
     btn.disabled = true;
@@ -17,7 +19,7 @@
     fetch("/api/enquiry", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: email, venueName: f.venueName.value, venueType: f.venueType.value, botcheck: f.botcheck.checked }),
+      body: JSON.stringify({ choice: picked.getAttribute("data-choice"), email: email, venueName: f.venueName.value, venueType: f.venueType.value, botcheck: f.botcheck.checked }),
     })
       .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
       .then(function (out) {

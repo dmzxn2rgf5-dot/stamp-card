@@ -1,7 +1,7 @@
 // Service worker: caches only the app shell (styles, scripts, default
 // images and an offline card template). Never caches card data.
-var CACHE = "shell-v2";
-var SHELL = ["/card-offline", "/css/app.css?v=2", "/js/card.js?v=2"];
+var CACHE = "shell-v3";
+var SHELL = ["/card-offline", "/css/app.css?v=3", "/js/card.js?v=3"];
 
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(SHELL); }).then(function () { return self.skipWaiting(); }));

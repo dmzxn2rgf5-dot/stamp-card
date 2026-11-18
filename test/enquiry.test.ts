@@ -31,7 +31,19 @@ describe("enquiry form", () => {
     expect(res.status).toBe(200);
     const page = await res.text();
     expect(page).toContain("Want Stamp Card for your venue?");
-    expect(page).toContain("No app. No subscription. Leave your email and we'll be in touch.");
+    expect(page).toContain("No app. No subscription. Pick an option, leave your email, and we'll send you everything you need.");
+    expect(page).toContain("What would you like?");
+    expect(page).toContain("Guided kit – £25.");
+    expect(page).toContain("Done for you – £199.");
+    expect(page).toContain("Just curious.");
+    expect(page).toContain("Thanks! We'll email you within 24 hours.");
+    const radios = page.match(/<input type="radio" name="choice"[^>]*>/g) || [];
+    expect(radios).toHaveLength(3);
+    for (const r of radios) {
+      expect(r).toContain("required");
+      expect(r).not.toContain("checked");
+    }
+    expect(page.indexOf('name="choice"')).toBeLessThan(page.indexOf('name="email"'));
     expect(page).toContain('name="botcheck"');
     expect(page).toMatch(/href="https:\/\/github\.com\/[^"]+\/stamp-card"/);
     expect(page).toContain("#2F6FED");
@@ -56,14 +68,16 @@ describe("enquiry form", () => {
     const res = await call("/api/enquiry", {
       method: "POST",
       ip: uniqueIp(),
-      json: { email: " Owner@Example.com ", venueName: "<b>Harbour</b> Bar", venueType: "bar", botcheck: false },
+      json: { choice: "kit", email: " Owner@Example.com ", venueName: "<b>Harbour</b> Bar", venueType: "bar", botcheck: false },
     });
     const out = (await res.json()) as { ok: boolean; endpoint: string; payload: Record<string, string> };
     expect(out.ok).toBe(true);
     expect(out.endpoint).toBe(ENQUIRY_ENDPOINT);
     const b = out.payload;
     expect(b.access_key).toBe(ENQUIRY_ACCESS_KEY);
-    expect(b.subject).toBe("Stamp Card enquiry – Harbour Bar");
+    expect(b.subject).toBe("Stamp Card enquiry – Guided kit – Harbour Bar");
+    expect(b.choice).toBe("Guided kit – £25");
+    expect(Object.keys(b).filter((k) => k !== "access_key")[0]).toBe("choice");
     expect(b.from_name).toBe("Stamp Card");
     expect(b.replyto).toBe("owner@example.com");
     expect(b.email).toBe("owner@example.com");
@@ -74,28 +88,44 @@ describe("enquiry form", () => {
   });
 
   it("uses 'No venue name' when the venue is left blank", async () => {
-    const res = await call("/api/enquiry", { method: "POST", ip: uniqueIp(), json: { email: "a@example.com", venueName: "  ", venueType: "nonsense" } });
+    const res = await call("/api/enquiry", { method: "POST", ip: uniqueIp(), json: { choice: "curious", email: "a@example.com", venueName: "  ", venueType: "nonsense" } });
     const out = (await res.json()) as { payload: Record<string, string> };
-    expect(out.payload.subject).toBe("Stamp Card enquiry – No venue name");
+    expect(out.payload.subject).toBe("Stamp Card enquiry – Just curious – No venue name");
     expect(out.payload.venue_type).toBe("Other");
   });
 
+  it("can't be sent without picking an option", async () => {
+    for (const choice of [undefined, "", "free-money", "toString"]) {
+      const res = await call("/api/enquiry", { method: "POST", ip: uniqueIp(), json: { choice, email: "a@example.com" } });
+      expect(res.status).toBe(400);
+      expect(((await res.json()) as { message: string }).message).toBe("Please pick an option.");
+    }
+  });
+
+  it("puts each option in the subject", async () => {
+    for (const [choice, label] of [["kit", "Guided kit"], ["done", "Done for you"], ["curious", "Just curious"]]) {
+      const res = await call("/api/enquiry", { method: "POST", ip: uniqueIp(), json: { choice, email: "a@example.com", venueName: "Cafe" } });
+      const out = (await res.json()) as { payload: Record<string, string> };
+      expect(out.payload.subject).toBe(`Stamp Card enquiry – ${label} – Cafe`);
+    }
+  });
+
   it("rejects a bad email", async () => {
-    const res = await call("/api/enquiry", { method: "POST", ip: uniqueIp(), json: { email: "not-an-email", venueType: "bar" } });
+    const res = await call("/api/enquiry", { method: "POST", ip: uniqueIp(), json: { choice: "curious", email: "not-an-email", venueType: "bar" } });
     expect(res.status).toBe(400);
   });
 
   it("gives nothing to send for honeypot submissions", async () => {
-    const res = await call("/api/enquiry", { method: "POST", ip: uniqueIp(), json: { email: "bot@example.com", botcheck: true } });
+    const res = await call("/api/enquiry", { method: "POST", ip: uniqueIp(), json: { choice: "curious", email: "bot@example.com", botcheck: true } });
     expect(await res.json()).toEqual({ ok: true, endpoint: null, payload: null });
   });
 
   it("allows 5 sends per IP per hour", async () => {
     const ip = uniqueIp();
     for (let i = 0; i < 5; i++) {
-      expect((await call("/api/enquiry", { method: "POST", ip, json: { email: `p${i}@example.com` } })).status).toBe(200);
+      expect((await call("/api/enquiry", { method: "POST", ip, json: { choice: "curious", email: `p${i}@example.com` } })).status).toBe(200);
     }
-    expect((await call("/api/enquiry", { method: "POST", ip, json: { email: "p6@example.com" } })).status).toBe(429);
+    expect((await call("/api/enquiry", { method: "POST", ip, json: { choice: "curious", email: "p6@example.com" } })).status).toBe(429);
   });
 
   it("is hidden when the owner turns the footer off", async () => {
@@ -103,7 +133,7 @@ describe("enquiry form", () => {
     const card = await newCard();
     expect(await (await call(`/card/${card.secretId}`)).text()).not.toContain("get-stamp-card");
     expect((await call("/get-stamp-card")).status).toBe(404);
-    expect((await call("/api/enquiry", { method: "POST", ip: uniqueIp(), json: { email: "a@example.com" } })).status).toBe(404);
+    expect((await call("/api/enquiry", { method: "POST", ip: uniqueIp(), json: { choice: "curious", email: "a@example.com" } })).status).toBe(404);
   });
 
   it("strips HTML from fields", () => {

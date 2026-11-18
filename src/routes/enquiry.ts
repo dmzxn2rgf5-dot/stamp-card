@@ -15,6 +15,18 @@ import { page } from "../views/layout";
 
 const app = new Hono<AppEnv>();
 
+/** "What would you like?" choices on the enquiry form. The label goes in the email subject. */
+export const ENQUIRY_OPTIONS = {
+  kit: { label: "Guided kit", price: "£25", detail: "Step-by-step guide to build it yourself with Claude." },
+  done: { label: "Done for you", price: "£199", detail: "We set it up, branded and ready to scan." },
+  curious: { label: "Just curious", price: "", detail: "Tell me more." },
+} as const;
+export type EnquiryOption = keyof typeof ENQUIRY_OPTIONS;
+const optionText = (k: EnquiryOption) => {
+  const o = ENQUIRY_OPTIONS[k];
+  return o.price ? `${o.label} – ${o.price}` : o.label;
+};
+
 /** The project's own look, whatever the shop's branding is. */
 export function neutralTheme(shop: ShopRow): Theme {
   return resolveTheme({
@@ -65,13 +77,22 @@ app.get("/get-stamp-card", (c) => {
         <header class="brand brand-sm"><img class="brand-logo" src="${t.logo}" alt="" width="56" height="56"><p class="brand-name">${PROJECT_NAME}</p></header>
         <section class="panel">
           <h1 class="display">Want ${PROJECT_NAME} for your venue?</h1>
-          <p>No app. No subscription. Leave your email and we'll be in touch.</p>
-          <p class="alert ok ${sent ? "" : "hidden"}" id="enquiry-done" role="status">Thanks, we'll be in touch.</p>
+          <p>No app. No subscription. Pick an option, leave your email, and we'll send you everything you need.</p>
+          <p class="alert ok ${sent ? "" : "hidden"}" id="enquiry-done" role="status">Thanks! We'll email you within 24 hours.</p>
           <form id="enquiry-form" method="post" action="${ENQUIRY_ENDPOINT}" class="${sent ? "hidden" : ""}" novalidate>
             <input type="hidden" name="access_key" value="${ENQUIRY_ACCESS_KEY}">
             <input type="hidden" name="subject" value="${PROJECT_NAME} enquiry">
             <input type="hidden" name="from_name" value="${PROJECT_NAME}">
             <input type="hidden" name="deployment" value="${publicOrigin(c.env, c.req.url)}">
+            <fieldset class="enquiry-options">
+              <legend>What would you like?</legend>
+              ${(Object.keys(ENQUIRY_OPTIONS) as EnquiryOption[]).map(
+                (k) => html`<label class="enquiry-option">
+                  <input type="radio" name="choice" value="${optionText(k)}" data-choice="${k}" required>
+                  <span><strong>${ENQUIRY_OPTIONS[k].label}${ENQUIRY_OPTIONS[k].price ? html` – ${ENQUIRY_OPTIONS[k].price}` : ""}.</strong> ${ENQUIRY_OPTIONS[k].detail}</span>
+                </label>`,
+              )}
+            </fieldset>
             <label class="field">Email
               <input type="email" name="email" required maxlength="254" autocomplete="email" inputmode="email"></label>
             <label class="field">Venue name <span class="muted">(optional)</span>
@@ -104,6 +125,8 @@ app.post("/api/enquiry", async (c) => {
   }
   const body = (await c.req.json().catch(() => null)) as Record<string, unknown> | null;
   if (!body || typeof body !== "object") return c.json({ ok: false, message: "Please fill in the form." }, 400);
+  const choice = typeof body.choice === "string" && Object.hasOwn(ENQUIRY_OPTIONS, body.choice) ? (body.choice as EnquiryOption) : null;
+  if (!choice) return c.json({ ok: false, message: "Please pick an option." }, 400);
   const email = normaliseEmail(stripHtml(body.email, 254));
   if (!email) return c.json({ ok: false, message: "Please enter a valid email address." }, 400);
   // A bot filled in the hidden field: look successful, send nothing.
@@ -116,7 +139,9 @@ app.post("/api/enquiry", async (c) => {
     endpoint: ENQUIRY_ENDPOINT,
     payload: {
       access_key: ENQUIRY_ACCESS_KEY,
-      subject: `${PROJECT_NAME} enquiry – ${venueName || "No venue name"}`,
+      // First field, so it's the first line of the email body.
+      choice: optionText(choice),
+      subject: `${PROJECT_NAME} enquiry – ${ENQUIRY_OPTIONS[choice].label} – ${venueName || "No venue name"}`,
       from_name: PROJECT_NAME,
       replyto: email,
       email,

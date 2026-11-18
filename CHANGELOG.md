@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Enquiry form: a required "What would you like?" choice (Guided kit – £25, Done for you – £199, Just curious). The choice leads the email subject and is the first line of the email. New success message: "Thanks! We'll email you within 24 hours."
 - Admin → Brand: a short note under the "Powered by Stamp Card" setting, and one gentle confirm ("Keep it on" / "Turn it off") when saving it switched off. The setting works exactly as before.
 
 ## v1.0.0
