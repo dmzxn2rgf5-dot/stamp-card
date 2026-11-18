@@ -7,7 +7,7 @@ import { qrSvg } from "../lib/qr";
 import { HOUR, hit } from "../lib/ratelimit";
 import { DAY, localDate, localTime, startOfDay, startOfWeek } from "../lib/time";
 import { HEX, STAMP_ICONS, WCAG_AA, contrastRatio, parseOverrides, resolveTheme, stampSvg, type ThemeOverrides } from "../lib/theme";
-import { DEFAULTS, PROJECT_NAME, VENUE_PRESETS, VENUE_TYPES, type StampIcon, type VenueType } from "../defaults";
+import { DEFAULTS, PROJECT_NAME, SITE_URL, VENUE_PRESETS, VENUE_TYPES, type StampIcon, type VenueType } from "../defaults";
 import { checkImage } from "../lib/images";
 import { publicOrigin } from "../lib/url";
 import type { AppEnv, StaffRow } from "../types";
@@ -282,7 +282,7 @@ app.get("/admin/", async (c) => {
               <label class="field">Body font (CSS)<input name="fontBody" value="${o.fontBody ?? ""}" placeholder="${DEFAULTS.fonts.body}"></label>
               <label class="field">Google Fonts URL (optional)<input name="fontsUrl" value="${o.fontsUrl ?? ""}" placeholder="https://fonts.googleapis.com/css2?family=…"></label>
               <label class="field"><input type="checkbox" name="showNameWithLogo" ${t.showNameWithLogo ? raw("checked") : ""} style="display:inline;width:auto;min-height:0"> Show shop name under the logo</label>
-              <label class="field"><input type="checkbox" name="poweredBy" ${t.poweredBy ? raw("checked") : ""} style="display:inline;width:auto;min-height:0"> Show “Powered by ${PROJECT_NAME} · Get it for your venue” at the bottom of the card (also turns the enquiry form on or off)</label>
+              <label class="field"><input type="checkbox" name="poweredBy" ${t.poweredBy ? raw("checked") : ""} style="display:inline;width:auto;min-height:0"> Show “Powered by ${PROJECT_NAME} · Get it for your venue” at the bottom of the card (also shows the Stamp Card line on the counter poster)</label>
               <p class="field-help" id="powered-by-help">Keeping this on helps keep ${PROJECT_NAME} free. Thank you.</p>
               <div class="row">
                 <button class="btn btn-primary" type="submit">Save brand</button>
@@ -439,6 +439,7 @@ app.get("/admin/poster", (c) => {
           </ol>
         </div>
         <div class="band"></div>
+        ${t.poweredBy ? html`<p class="poster-foot">Run a café, bar or takeaway? Get ${PROJECT_NAME} free – ${SITE_URL}</p>` : ""}
       </div>`,
       scripts: ["/js/poster.js"],
     }),

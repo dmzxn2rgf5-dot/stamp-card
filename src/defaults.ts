@@ -8,6 +8,10 @@ export const PROJECT_NAME = "Stamp Card";
 export const PROJECT_TAGLINE = "the loyalty card alternative";
 /** Linked from the "Powered by Stamp Card" footer line. */
 export const PROJECT_URL = "https://github.com/dmzxn2rgf5-dot/stamp-card";
+/** The Stamp Card website (GitHub Pages, built from site/). Ends with a slash. */
+export const SITE_URL = "https://dmzxn2rgf5-dot.github.io/stamp-card/";
+/** Where "Get it for your venue" goes: the enquiry form on the website. */
+export const GET_IT_URL = `${SITE_URL}get-it/`;
 
 export const DEFAULTS = {
   name: "Your Shop",

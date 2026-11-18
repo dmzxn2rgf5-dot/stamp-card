@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.2.0
+
+- **Website.** A static marketing site in `site/`, built by `scripts/build-site.py` and published free on GitHub Pages at https://dmzxn2rgf5-dot.github.io/stamp-card/ by a new `pages.yml` workflow. It has pages for 18 venue types and 6 countries, an enquiry form that sends straight to Web3Forms, a sitemap, robots.txt and an IndexNow key.
+- **"Get it for your venue" now opens the website.** The Powered-by footer link opens the enquiry form at `/get-it/` on the website in a new tab. The old in-app `/get-stamp-card` page redirects there. Both are still hidden when the owner turns the footer off.
+- **Counter poster line.** A small, muted line at the bottom of the printable poster: "Run a café, bar or takeaway? Get Stamp Card free – <website>". It follows the "Powered by Stamp Card" setting.
+- README: links to the website and the enquiry form near the top, the paid options and "Get in touch" point to the website's form, and the setup time now says "under an hour".
+
 ## v1.1.0
 
 - Enquiry form: a required "What would you like?" choice (Guided kit – £25, Done for you – £199, Just curious). The choice leads the email subject and is the first line of the email. New success message: "Thanks! We'll email you within 24 hours."

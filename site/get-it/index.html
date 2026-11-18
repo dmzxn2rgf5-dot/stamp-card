@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Get Stamp Card for your venue | Stamp Card</title>
+<meta name="description" content="Get Stamp Card for your café, bar, restaurant or takeaway. Free to set up yourself, a £25 guided kit, or done for you.">
+<link rel="canonical" href="https://dmzxn2rgf5-dot.github.io/stamp-card/get-it/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Get Stamp Card for your venue | Stamp Card">
+<meta property="og:description" content="Get Stamp Card for your café, bar, restaurant or takeaway. Free to set up yourself, a £25 guided kit, or done for you.">
+<meta property="og:url" content="https://dmzxn2rgf5-dot.github.io/stamp-card/get-it/">
+<meta property="og:image" content="https://dmzxn2rgf5-dot.github.io/stamp-card/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../style.css">
+
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="logo" href="../"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#0b1f4b"/><circle cx="11" cy="12" r="4" fill="#2f6fed"/><circle cx="21" cy="12" r="4" fill="#2f6fed"/><circle cx="11" cy="21" r="4" fill="#2f6fed"/><circle cx="21" cy="21" r="4" fill="none" stroke="#fff" stroke-width="1.6" stroke-dasharray="2 2"/></svg>Stamp Card</a>
+<nav><a href="../#how">How it works</a><a href="../#venues">Who it's for</a><a href="https://github.com/dmzxn2rgf5-dot/stamp-card">GitHub</a><a class="btn" href="../get-it/">Get it free</a></nav>
+</div></header>
+<section class="hero"><div class="wrap" style="display:block;max-width:640px">
+<h1>Get Stamp Card for your venue.</h1>
+<p class="lead">No app. No subscription. Pick an option, leave your email, and we'll send you everything you need.</p>
+<form id="f" action="https://api.web3forms.com/submit" method="POST" class="card">
+<input type="hidden" name="access_key" value="6b778227-8154-4f3e-a4db-b113abc77d11">
+<input type="hidden" name="subject" value="Stamp Card enquiry (website)">
+<input type="hidden" name="from_name" value="Stamp Card website">
+<input type="hidden" name="redirect" value="https://dmzxn2rgf5-dot.github.io/stamp-card/thanks/">
+<input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
+<div class="field"><label>What would you like?</label>
+<label class="choice"><input type="radio" name="choice" value="Free – I&#x27;ll set it up myself" data-k="free" required><b>Free – I&#x27;ll set it up myself</b><br><span style="color:var(--muted)">Send me the link to the code and setup guide.</span></label>
+<label class="choice"><input type="radio" name="choice" value="Guided kit – £25" data-k="kit" required><b>Guided kit – £25</b><br><span style="color:var(--muted)">Step-by-step guide to build it yourself with Claude, plus posters.</span></label>
+<label class="choice"><input type="radio" name="choice" value="Done for you – £199" data-k="done" required><b>Done for you – £199</b><br><span style="color:var(--muted)">You set it up, branded and ready to scan.</span></label>
+<label class="choice"><input type="radio" name="choice" value="Just curious" data-k="curious" required><b>Just curious</b><br><span style="color:var(--muted)">Tell me more.</span></label>
+</div>
+<div class="field"><label for="email">Your email</label><input id="email" type="email" name="email" required autocomplete="email"></div>
+<div class="field"><label for="venue">Venue name <span style="font-weight:400;color:var(--muted)">(optional)</span></label><input id="venue" type="text" name="venue_name" maxlength="120"></div>
+<div class="field"><label for="vt">Type of venue</label><select id="vt" name="venue_type"><option>Coffee shop</option><option>Café</option><option>Bar</option><option>Pub</option><option>Restaurant</option><option>Takeaway</option><option>Sandwich shop</option><option>Burger joint</option><option>Fish and chip shop</option><option>Chinese takeaway</option><option>Indian takeaway</option><option>Chicken shop</option><option>Pizza shop</option><option>Bakery</option><option>Food truck</option><option>Ice cream shop</option><option>Juice bar</option><option>Barber or salon</option><option>Other</option></select></div>
+<div class="field"><label for="ct">Country</label><select id="ct" name="country"><option>UK</option><option>US</option><option>Australia</option><option>Canada</option><option>Ireland</option><option>New Zealand</option><option>Other</option></select></div>
+<div class="err" id="err">Please pick an option.</div>
+<button class="btn" type="submit" id="go">Send</button>
+<p style="font-size:13px;color:var(--muted);margin-top:12px">We'll only use your email to reply. See our <a href="../privacy/">privacy note</a>.</p>
+</form></div></section>
+<script>
+(function(){
+ var f=document.getElementById('f'),err=document.getElementById('err'),go=document.getElementById('go');
+ var want=new URLSearchParams(location.search).get('want');
+ if(want){var r=f.querySelector('input[data-k="'+want+'"]');if(r)r.checked=true;}
+ f.addEventListener('submit',function(e){
+  e.preventDefault();
+  var c=f.querySelector('input[name=choice]:checked');
+  if(!c){err.style.display='block';return;}
+  err.style.display='none';
+  var v=f.venue.value.trim()||'No venue name';
+  var data=new FormData(f);
+  data.set('subject','Stamp Card enquiry – '+c.value.split(' – ')[0]+' – '+v+' ('+f.country.value+')');
+  data.set('replyto',f.email.value);
+  var o={};o['What they want']=c.value;data.forEach(function(val,k){if(k!=='choice')o[k]=val;});
+  o.page=document.referrer||location.href;
+  go.disabled=true;go.textContent='Sending…';
+  fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(o)})
+  .then(function(r){return r.json()}).then(function(j){
+    if(j.success){location.href='../thanks/';}else{throw 0}
+  }).catch(function(){go.disabled=false;go.textContent='Send';err.textContent='Sorry, that didn\'t send. Please try again.';err.style.display='block';});
+ });
+})();
+</script>
+<footer><div class="wrap">
+<p><b>Stamp Card</b> – the loyalty card alternative. Free and open source under the MIT licence.</p>
+<p><a href="../">Home</a> · <a href="../get-it/">Get Stamp Card</a> · <a href="https://github.com/dmzxn2rgf5-dot/stamp-card">Source code on GitHub</a> · <a href="../privacy/">Privacy</a></p>
+<p>Made in Bournemouth, UK, for a friend's coffee shop.</p>
+</div></footer>
+</body></html>

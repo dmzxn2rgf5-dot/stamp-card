@@ -6,7 +6,7 @@ import { isSecretId } from "../lib/crypto";
 import { html, jsonData, raw } from "../lib/html";
 import { emailEnabled, maskEmail } from "../lib/email";
 import { publicOrigin } from "../lib/url";
-import { PROJECT_NAME } from "../defaults";
+import { GET_IT_URL, PROJECT_NAME } from "../defaults";
 import { broadcastForCard, broadcastPopup } from "./broadcasts";
 import { qrSvg } from "../lib/qr";
 import { HOUR, hit } from "../lib/ratelimit";
@@ -237,7 +237,7 @@ function cardPage(
         Your card lives in this browser. Bookmark this page or add it to your home screen so you don't lose it.<br>
         ${emailOn ? html`<a href="/recover">Lost your card?</a> · ` : ""}<a href="/privacy">Privacy</a>
       </footer>
-      ${t.poweredBy ? html`<p class="powered-by">Powered by ${PROJECT_NAME} · <a href="/get-stamp-card">Get it for your venue</a></p>` : ""}
+      ${t.poweredBy ? html`<p class="powered-by">Powered by ${PROJECT_NAME} · <a href="${GET_IT_URL}" target="_blank" rel="noopener">Get it for your venue</a></p>` : ""}
       ${broadcast ? broadcastPopup(t, broadcast) : ""}
       ${jsonData("card-data", {
         secretId: card ? card.secret_id : null,

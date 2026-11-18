@@ -44,7 +44,7 @@ Bindings in `wrangler.toml`:
 | Tagline | Collect a stamp every visit | Admin → Brand |
 | Fonts | System fonts | Admin → Brand. CSS font names, plus an optional Google Fonts link |
 | Show name under logo | On | Admin → Brand |
-| "Powered by Stamp Card" | On | Admin → Brand. A small line under everything on the customer card: "Powered by Stamp Card · Get it for your venue", linking to the enquiry form at `/get-stamp-card`. Untick to hide the line; the form page is then hidden too (404). Saving it switched off asks once to confirm |
+| "Powered by Stamp Card" | On | Admin → Brand. A small line under everything on the customer card: "Powered by Stamp Card · Get it for your venue", linking to the enquiry form on the [Stamp Card website](https://dmzxn2rgf5-dot.github.io/stamp-card/get-it/) in a new tab. It also adds one small line at the bottom of the counter poster. Untick to hide both; `/get-stamp-card` then returns 404 instead of redirecting to the website. Saving it switched off asks once to confirm |
 
 **Reset to defaults** in Admin → Brand resets colours, fonts, icon and logo. Your name, rules, staff and cards are kept.
 
@@ -80,4 +80,8 @@ The card page checks for new stamps every 2 seconds while open (`POLL_MS` in `pu
 
 ## Enquiry form
 
-`/get-stamp-card` lets people who see a card ask about getting Stamp Card for their own venue. It always uses the neutral Stamp Card look, not your branding. Messages go to the Stamp Card project through [Web3Forms](https://web3forms.com), sent from the visitor's browser (`/api/enquiry` checks and cleans them first), not to you, and aren't stored in your database. The Web3Forms access key in `src/config.ts` (`ENQUIRY_ACCESS_KEY`) is public by design. If you run a fork and want enquiries to come to you, replace it with your own key. To switch the form off, untick "Powered by Stamp Card" in Admin → Brand.
+"Get it for your venue" lets people who see a card ask about getting Stamp Card for their own venue. The form is on the Stamp Card website at [https://dmzxn2rgf5-dot.github.io/stamp-card/get-it/](https://dmzxn2rgf5-dot.github.io/stamp-card/get-it/) (`GET_IT_URL` in `src/defaults.ts`), not in your app. The old in-app address `/get-stamp-card` redirects there. Messages go to the Stamp Card project through [Web3Forms](https://web3forms.com), not to you, and nothing is stored in your database. If you run a fork and want enquiries to come to you, point `SITE_URL` and `GET_IT_URL` in `src/defaults.ts` at your own page. To switch the link off, untick "Powered by Stamp Card" in Admin → Brand.
+
+## Website
+
+The marketing site in `site/` is published to GitHub Pages by `.github/workflows/pages.yml` whenever `site/` changes on `main`. Don't edit the HTML by hand. Change `scripts/build-site.py` and run `python3 scripts/build-site.py` (needs `pip install qrcode`), which rebuilds `site/`.

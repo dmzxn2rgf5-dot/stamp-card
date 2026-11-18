@@ -1,6 +1,7 @@
-// Amendment 01: "Get it for your venue" enquiry form.
+// Amendments 01 and 04: "Get it for your venue" enquiry form, now on the website.
 import { afterEach, describe, expect, it } from "vitest";
 import { ENQUIRY_ACCESS_KEY, ENQUIRY_ENDPOINT } from "../src/config";
+import { GET_IT_URL, SITE_URL } from "../src/defaults";
 import { stripHtml } from "../src/routes/enquiry";
 import { call, makeStaff, newCard, uniqueIp } from "./helpers";
 
@@ -14,54 +15,19 @@ afterEach(async () => {
 });
 
 describe("enquiry form", () => {
-  it("footer links to the form page", async () => {
+  it("footer links to the form on the Stamp Card website, in a new tab", async () => {
     const card = await newCard();
     const body = await (await call(`/card/${card.secretId}`)).text();
     expect(body).toContain("Powered by Stamp Card · ");
-    expect(body).toContain('href="/get-stamp-card">Get it for your venue</a>');
-    expect(body).not.toContain("github.com");
+    expect(body).toContain(`<a href="${GET_IT_URL}" target="_blank" rel="noopener">Get it for your venue</a>`);
+    expect(body).not.toContain("/get-stamp-card");
   });
 
-  it("shows the form in neutral styling with a link to the repo", async () => {
-    const owner = await makeStaff("owner");
-    expect((await call("/api/admin/shop", { method: "PATCH", cookie: owner.cookie, json: { primary: "#AA0000" } })).status).toBe(200);
-    const card = await newCard();
-    expect(await (await call(`/card/${card.secretId}`)).text()).toContain("#AA0000");
+  it("redirects the old /get-stamp-card page to the website", async () => {
     const res = await call("/get-stamp-card");
-    expect(res.status).toBe(200);
-    const page = await res.text();
-    expect(page).toContain("Want Stamp Card for your venue?");
-    expect(page).toContain("No app. No subscription. Pick an option, leave your email, and we'll send you everything you need.");
-    expect(page).toContain("What would you like?");
-    expect(page).toContain("Guided kit – £25.");
-    expect(page).toContain("Done for you – £199.");
-    expect(page).toContain("Just curious.");
-    expect(page).toContain("Thanks! We'll email you within 24 hours.");
-    const radios = page.match(/<input type="radio" name="choice"[^>]*>/g) || [];
-    expect(radios).toHaveLength(3);
-    for (const r of radios) {
-      expect(r).toContain("required");
-      expect(r).not.toContain("checked");
-    }
-    expect(page.indexOf('name="choice"')).toBeLessThan(page.indexOf('name="email"'));
-    expect(page).toContain('name="botcheck"');
-    expect(page).toMatch(/href="https:\/\/github\.com\/[^"]+\/stamp-card"/);
-    expect(page).toContain("#2F6FED");
-    expect(page).not.toContain("#AA0000");
-    await call("/api/admin/shop", { method: "PATCH", cookie: owner.cookie, json: { primary: "#2F6FED" } });
-  });
-
-  it("lets the browser talk to Web3Forms, and works without JS", async () => {
-    const res = await call("/get-stamp-card");
-    const csp = res.headers.get("Content-Security-Policy") || "";
-    expect(csp).toContain("connect-src 'self' https://api.web3forms.com");
-    expect(csp).toContain("form-action https://api.web3forms.com");
-    expect(csp).toContain("script-src 'self'");
-    const page = await res.text();
-    expect(page).toContain(`action="${ENQUIRY_ENDPOINT}"`);
-    expect(page).toContain(`name="access_key" value="${ENQUIRY_ACCESS_KEY}"`);
-    // Other pages keep the strict policy.
-    expect((await call("/privacy")).headers.get("Content-Security-Policy")).toContain("connect-src 'self';");
+    expect(res.status).toBe(301);
+    expect(res.headers.get("Location")).toBe(GET_IT_URL);
+    expect(GET_IT_URL).toBe("https://dmzxn2rgf5-dot.github.io/stamp-card/get-it/");
   });
 
   it("returns a cleaned Web3Forms payload for a valid enquiry", async () => {
@@ -131,9 +97,19 @@ describe("enquiry form", () => {
   it("is hidden when the owner turns the footer off", async () => {
     await footer(false);
     const card = await newCard();
-    expect(await (await call(`/card/${card.secretId}`)).text()).not.toContain("get-stamp-card");
+    expect(await (await call(`/card/${card.secretId}`)).text()).not.toContain(GET_IT_URL);
     expect((await call("/get-stamp-card")).status).toBe(404);
     expect((await call("/api/enquiry", { method: "POST", ip: uniqueIp(), json: { choice: "curious", email: "a@example.com" } })).status).toBe(404);
+  });
+
+  it("shows the website line on the counter poster, and hides it with the footer", async () => {
+    const owner = await makeStaff("owner");
+    const line = `Run a café, bar or takeaway? Get Stamp Card free – ${SITE_URL}`;
+    const on = await (await call("/admin/poster", { cookie: owner.cookie })).text();
+    expect(on).toContain(`<p class="poster-foot">${line}</p>`);
+    expect(on.indexOf("poster-foot")).toBeGreaterThan(on.lastIndexOf('class="band"'));
+    await footer(false);
+    expect(await (await call("/admin/poster", { cookie: owner.cookie })).text()).not.toContain("poster-foot");
   });
 
   it("strips HTML from fields", () => {

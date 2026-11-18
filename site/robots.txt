@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://dmzxn2rgf5-dot.github.io/stamp-card/sitemap.xml

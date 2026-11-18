@@ -4,7 +4,7 @@
 
 **No app. No subscription. No running costs. Your brand. Free and open source.**
 
-**[Try the live demo →](https://stamp-card-demo.getstampcard.workers.dev/join)** It opens a real card for "Demo Café" on your phone.
+**[Website](https://dmzxn2rgf5-dot.github.io/stamp-card/)** · **[Get it for your venue](https://dmzxn2rgf5-dot.github.io/stamp-card/get-it/)** · **[Try the live demo →](https://stamp-card-demo.getstampcard.workers.dev/join)** It opens a real card for "Demo Café" on your phone.
 
 You know the paper stamp card. The one that ends up in the washing machine. The one customers forget, lose or never pick up in the first place.
 
@@ -60,13 +60,13 @@ No hardware. No till integration. No training beyond "scan it and tap plus".
 
 ## Get it running
 
-**Do it yourself (free).** Clone this repo and follow [docs/SETUP.md](docs/SETUP.md). Deploy to your own Cloudflare account, open the setup wizard, add your logo and colours, print your poster. If you're comfortable following steps in a terminal, you'll be live in an afternoon.
+**Do it yourself (free).** Clone this repo and follow [docs/SETUP.md](docs/SETUP.md). Deploy to your own Cloudflare account, open the setup wizard, add your logo and colours, print your poster. If you're comfortable following steps in a terminal, you'll be live in under an hour.
 
-**[Build it with Claude (£25).](https://stamp-card-demo.getstampcard.workers.dev/get-stamp-card)** The Stamp Card build kit has the full product brief, a plain-English setup guide and printable posters. Hand the brief to Claude Code and it builds your own customised version. You don't need to write any code.
+**[Build it with Claude (£25).](https://dmzxn2rgf5-dot.github.io/stamp-card/get-it/?want=kit)** The Stamp Card build kit has the full product brief, a plain-English setup guide and printable posters. Hand the brief to Claude Code and it builds your own customised version. You don't need to write any code.
 
-**[We'll build it for you.](https://stamp-card-demo.getstampcard.workers.dev/get-stamp-card)** Want it done for you? We set it up on your own Cloudflare account, branded and ready to scan.
+**[We'll build it for you.](https://dmzxn2rgf5-dot.github.io/stamp-card/get-it/?want=done)** Want it done for you? We set it up on your own Cloudflare account, branded and ready to scan.
 
-Questions? **[Get in touch](https://stamp-card-demo.getstampcard.workers.dev/get-stamp-card).**
+Questions? **[Get in touch](https://dmzxn2rgf5-dot.github.io/stamp-card/get-it/).**
 
 ## Docs
 
