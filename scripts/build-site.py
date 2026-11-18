@@ -259,6 +259,8 @@ def build():
     with open(os.path.join(OUT, "favicon.svg"), "w") as f:
         f.write(LOGO.replace(' aria-hidden="true"', ' xmlns="http://www.w3.org/2000/svg"'))
     open(os.path.join(OUT, ".nojekyll"), "w").close()
+    # Share image for og:image (1200 x 630). Kept in scripts/ so a rebuild never loses it.
+    shutil.copy(os.path.join(os.path.dirname(os.path.abspath(__file__)), "og.png"), os.path.join(OUT, "og.png"))
     with open(os.path.join(OUT, f"{INDEXNOW_KEY}.txt"), "w") as f:
         f.write(INDEXNOW_KEY)
     urls = []
