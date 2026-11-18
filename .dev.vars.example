@@ -1,0 +1,6 @@
+# Local development secrets. Copy to .dev.vars (gitignored):
+#   cp .dev.vars.example .dev.vars
+SETUP_TOKEN=change-me-to-a-long-random-string
+# Uncomment to try email recovery locally: emails are printed to the console, not sent.
+# EMAIL_RECOVERY=on
+# EMAIL_DEV_LOG=1

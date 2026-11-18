@@ -1,0 +1,39 @@
+# ─────────────────────────────────────────────────────────────
+# Stamp Card – Cloudflare Worker config
+#
+# Copy this file to wrangler.toml and fill in the placeholders:
+#   cp wrangler.toml.example wrangler.toml
+# wrangler.toml is gitignored so your IDs never end up in git.
+# One deploy = one venue. See docs/SETUP.md and docs/CONFIG.md.
+# ─────────────────────────────────────────────────────────────
+name = "stamp-card"                 # your Worker's name (becomes stamp-card.<you>.workers.dev)
+main = "src/index.ts"
+compatibility_date = "2026-11-01"
+# account_id = "REPLACE_WITH_YOUR_ACCOUNT_ID"   # only needed if you have more than one Cloudflare account
+
+[assets]
+directory = "public"
+
+[vars]
+SHOP_ID = "main"                    # stable id stored on every record. Don't change it after launch.
+TIMEZONE = "Europe/London"          # used for "today", daily stamp limits and stats
+EMAIL_RECOVERY = "off"              # "on" needs Workers Paid + Cloudflare Email Service (docs/EMAIL.md)
+# PUBLIC_URL = "https://cards.example.com"   # your public address, used in QR codes and emails
+# EMAIL_FROM = "cards@example.com"           # sender address on your own domain (email recovery only)
+
+[[d1_databases]]
+binding = "DB"
+database_name = "stamp-card-db"
+database_id = "REPLACE_WITH_YOUR_DATABASE_ID"   # printed by: npx wrangler d1 create stamp-card-db
+migrations_dir = "migrations"
+
+# Secrets – never put these in this file. Set them with:
+#   npx wrangler secret put SETUP_TOKEN
+# SETUP_TOKEN unlocks the one-time setup wizard at /setup?token=…
+
+# ── Email card recovery (optional) ───────────────────────────
+# Only with EMAIL_RECOVERY = "on". Needs the Workers Paid plan and your
+# domain onboarded to Cloudflare Email Service. Then uncomment:
+#
+# [[send_email]]
+# name = "EMAIL"
