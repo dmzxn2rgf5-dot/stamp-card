@@ -247,3 +247,11 @@ img.stamp-art { object-fit: contain; }
 .enquiry .panel { text-align: left; }
 .enquiry .brand-name { font-weight: 800; }
 .powered-by a:hover { text-decoration: underline; }
+
+/* Helper text under a setting, and the small in-page confirm dialog */
+.field-help { font-size: 13px; opacity: .7; margin: -6px 0 14px; }
+.sc-dialog { border: 0; border-radius: 18px; padding: 20px; max-width: min(360px, calc(100vw - 32px)); color: var(--ink); background: var(--bg, #fff); box-shadow: 0 12px 40px rgba(0,0,0,.25); }
+.sc-dialog::backdrop { background: rgba(0,0,0,.5); }
+.sc-dialog p { margin: 0 0 16px; font-weight: 600; line-height: 1.4; }
+.sc-dialog .row { display: flex; gap: 10px; flex-wrap: wrap; }
+.sc-dialog .btn { flex: 1 1 auto; }

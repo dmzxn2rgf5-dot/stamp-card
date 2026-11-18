@@ -283,12 +283,22 @@ app.get("/admin/", async (c) => {
               <label class="field">Google Fonts URL (optional)<input name="fontsUrl" value="${o.fontsUrl ?? ""}" placeholder="https://fonts.googleapis.com/css2?family=…"></label>
               <label class="field"><input type="checkbox" name="showNameWithLogo" ${t.showNameWithLogo ? raw("checked") : ""} style="display:inline;width:auto;min-height:0"> Show shop name under the logo</label>
               <label class="field"><input type="checkbox" name="poweredBy" ${t.poweredBy ? raw("checked") : ""} style="display:inline;width:auto;min-height:0"> Show “Powered by ${PROJECT_NAME} · Get it for your venue” at the bottom of the card (also turns the enquiry form on or off)</label>
+              <p class="field-help" id="powered-by-help">Keeping this on helps keep ${PROJECT_NAME} free. Thank you.</p>
               <div class="row">
                 <button class="btn btn-primary" type="submit">Save brand</button>
                 <button class="btn btn-ghost" type="button" id="brand-reset">Reset to defaults</button>
               </div>
               <span class="small muted" data-msg></span>
             </form>
+              <dialog class="sc-dialog" id="powered-by-confirm" aria-labelledby="powered-by-confirm-text">
+                <form method="dialog">
+                  <p id="powered-by-confirm-text">Turn off the ${PROJECT_NAME} link? It's small, and it's how ${PROJECT_NAME} stays free.</p>
+                  <div class="row">
+                    <button class="btn btn-primary" value="keep" autofocus>Keep it on</button>
+                    <button class="btn btn-ghost" value="off">Turn it off</button>
+                  </div>
+                </form>
+              </dialog>
             <hr style="border:0;border-top:1px solid rgba(0,0,0,.1);margin:18px 0">
             <h3>Logo</h3>
             <div class="row" style="align-items:flex-start">

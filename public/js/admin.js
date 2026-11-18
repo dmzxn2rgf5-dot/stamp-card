@@ -51,8 +51,26 @@
     });
   });
   brand.broadcastBg.addEventListener("change", checkContrast);
+  // Footer nudge: one gentle confirm when a save would switch the Powered-by line off.
+  var poweredBySaved = brand.poweredBy.checked;
+  var poweredByDialog = document.getElementById("powered-by-confirm");
   brand.addEventListener("submit", function (e) {
     e.preventDefault();
+    if (poweredBySaved && !brand.poweredBy.checked && poweredByDialog && poweredByDialog.showModal) {
+      poweredByDialog.returnValue = "";
+      poweredByDialog.showModal();
+      return;
+    }
+    saveBrand();
+  });
+  if (poweredByDialog) {
+    poweredByDialog.addEventListener("close", function () {
+      var choice = poweredByDialog.returnValue;
+      if (choice === "keep") brand.poweredBy.checked = true;
+      if (choice === "keep" || choice === "off") saveBrand(); // Esc cancels: nothing saved
+    });
+  }
+  function saveBrand() {
     window.api("PATCH", "/api/admin/shop", {
       primary: brand.primary.value,
       secondary: brand.secondary.value,
@@ -71,8 +89,11 @@
         showNameWithLogo: brand.showNameWithLogo.checked,
         poweredBy: brand.poweredBy.checked,
       },
-    }).then(function (r) { after(brand, r, true); });
-  });
+    }).then(function (r) {
+      if (r.ok) poweredBySaved = brand.poweredBy.checked;
+      after(brand, r, true);
+    });
+  }
   document.getElementById("brand-reset").addEventListener("click", function () {
     if (!confirm("Reset colours, fonts, icon and logo to the defaults?")) return;
     window.api("PATCH", "/api/admin/shop", { reset: true }).then(function (r) { after(brand, r, true); });

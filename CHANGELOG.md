@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Admin → Brand: a short note under the "Powered by Stamp Card" setting, and one gentle confirm ("Keep it on" / "Turn it off") when saving it switched off. The setting works exactly as before.
+
 ## v1.0.0
 
 First public release of Stamp Card – the loyalty card alternative.

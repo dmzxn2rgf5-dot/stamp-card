@@ -44,7 +44,7 @@ Bindings in `wrangler.toml`:
 | Tagline | Collect a stamp every visit | Admin → Brand |
 | Fonts | System fonts | Admin → Brand. CSS font names, plus an optional Google Fonts link |
 | Show name under logo | On | Admin → Brand |
-| "Powered by Stamp Card" | On | Admin → Brand. A small line under everything on the customer card: "Powered by Stamp Card · Get it for your venue", linking to the enquiry form at `/get-stamp-card`. Untick to hide the line; the form page is then hidden too (404) |
+| "Powered by Stamp Card" | On | Admin → Brand. A small line under everything on the customer card: "Powered by Stamp Card · Get it for your venue", linking to the enquiry form at `/get-stamp-card`. Untick to hide the line; the form page is then hidden too (404). Saving it switched off asks once to confirm |
 
 **Reset to defaults** in Admin → Brand resets colours, fonts, icon and logo. Your name, rules, staff and cards are kept.
 

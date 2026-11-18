@@ -11,7 +11,7 @@ export interface PageOpts {
   noindex?: boolean;
 }
 
-export const ASSET_VERSION = "1";
+export const ASSET_VERSION = "2";
 
 export function page(o: PageOpts): string {
   const t = o.theme;

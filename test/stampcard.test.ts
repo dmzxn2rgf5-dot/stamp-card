@@ -111,6 +111,18 @@ describe("logo and stamp icon uploads", () => {
 });
 
 describe("Powered by Stamp Card", () => {
+  it("nudges owners to keep it on (Amendment 02)", async () => {
+    const owner = await makeStaff("owner");
+    const page = await (await call("/admin/", { cookie: owner.cookie })).text();
+    const box = page.indexOf('name="poweredBy"');
+    const help = page.indexOf("Keeping this on helps keep Stamp Card free. Thank you.");
+    expect(box).toBeGreaterThan(-1);
+    expect(help).toBeGreaterThan(box);
+    expect(page).toContain("Turn off the Stamp Card link? It's small, and it's how Stamp Card stays free.");
+    expect(page).toMatch(/class="btn btn-primary" value="keep"[^>]*>Keep it on</);
+    expect(page).toMatch(/value="off">Turn it off</);
+  });
+
   it("shows by default and the owner can turn it off", async () => {
     const owner = await makeStaff("owner");
     const card = await newCard();
